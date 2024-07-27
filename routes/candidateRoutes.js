@@ -12,6 +12,32 @@ const checkAdminRole = async (userID) => {
   return false;
 };
 
+//get all candidates list
+routes.get("/", async (req, res) => {
+  try {
+    const candidates = await Candidate.find();
+    const candidateDate = candidates.map((data) => {
+      return {
+        name: data.name,
+        party: data.party,
+      };
+    });
+
+    //creating an array containg all the candidates names
+    const candidateList = candidateDate.map((data) => {
+      return data.name;
+    });
+
+    console.log("Candidate names retrieved successfully");
+    res
+      .status(200)
+      .json({ message: "Candidate names retrieved successfully", data: candidateList });
+  } catch (error) {
+    console.log("Error getting candidate names:", error);
+    res.status(500).json({ error: "Error getting candidate names" });
+  }
+});
+
 //post routes to add candidate
 routes.post("/", jwtAuthMiddleware, async (req, res) => {
   try {
